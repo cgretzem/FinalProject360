@@ -22,6 +22,16 @@ public class Repository
 		dateList = new Stack<String>();
 	}
 	
+	public Stack<Student> getStudents()
+	{
+		return studentList;
+	}
+	
+	public Stack<String> getDateList()
+	{
+		return dateList;
+	}
+	
 	public void openAttendence(String date, Component parent) throws FileNotFoundException, IOException
 	{
 		dateList.add(date);
@@ -72,7 +82,7 @@ public class Repository
 		//selector sets newFile = user chosen CSV file, otherwise newFile = null;
 			File newFile = null;
 			JFileChooser chooser = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", ".csv"); 
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv", "CSV"); 
 			chooser.setFileFilter(filter);
 			int returnVal = chooser.showOpenDialog(parent);
 			if(returnVal == JFileChooser.APPROVE_OPTION)
@@ -83,7 +93,7 @@ public class Repository
 			return newFile;
 	}
 	
-	public void openRoster(Component parent) throws IOException, FileNotFoundException
+	public void openRoster(Component parent) throws IOException, FileNotFoundException, RuntimeException
 	{
 		File newFile = loadFile(parent);
 		
@@ -107,6 +117,7 @@ public class Repository
 			else
 			{
 				//create a new student object with the line of values
+				
 				studentList.add(new Student(Integer.valueOf(student[0]),student[1],student[2],student[3],student[4],student[5]));
 			}
 			
