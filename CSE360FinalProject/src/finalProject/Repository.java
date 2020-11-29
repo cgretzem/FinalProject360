@@ -37,8 +37,8 @@ public class Repository
 		br = new BufferedReader(new FileReader(newFile));
 		while((line = br.readLine()) != null)
 		{
-			String[] student = line.split(delimiter);
-			if (student.length != 2)
+			String[] lines = line.split(delimiter);
+			if (lines.length != 2)
 			{
 				br.close();
 				throw new RuntimeException("File was not formatted correctly");
@@ -47,9 +47,9 @@ public class Repository
 			{
 				for(int i = 0; i < studentList.size(); i++)
 				{
-					if(studentList.get(i).getASU().equals(student[0]))
+					if(studentList.get(i).getASU().equals(lines[0]))
 					{
-						studentList.get(i).addDate(date, Integer.valueOf(student[1]));
+						studentList.get(i).addDate(date, Integer.valueOf(lines[1]));
 					}
 				}
 			}
@@ -78,7 +78,8 @@ public class Repository
 	public void openRoster(Component parent) throws IOException, FileNotFoundException
 	{
 		File newFile = loadFile(parent);
-		if(newFile == null)
+		
+		if(newFile == null) // if loadFile fails
 		{
 			throw new FileNotFoundException("Wrong type of file");
 		}
@@ -97,6 +98,7 @@ public class Repository
 			}
 			else
 			{
+				//create a new student object with the line of values
 				studentList.add(new Student(Integer.valueOf(student[0]),student[1],student[2],student[3],student[4],student[5]));
 			}
 			
