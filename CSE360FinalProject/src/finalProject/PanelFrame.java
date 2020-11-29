@@ -1,13 +1,17 @@
 package finalProject;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -20,13 +24,15 @@ import javax.swing.table.DefaultTableModel;
 public class PanelFrame extends JPanel implements ActionListener
 {
 	private JFrame frame;
+	private JScrollPane scrollPane;
+	private JPanel pan;
 	private Repository repos;
 	private ArrayList<String> columnNames;
 	private ArrayList<ArrayList<Object>> data;
-
+	private JList<String> months; 
+	private JList<Integer >days;
 	public PanelFrame(JFrame frame)
 	{
-
 
 		repos = new Repository();
 		columnNames = new ArrayList<String>();
@@ -69,6 +75,33 @@ public class PanelFrame extends JPanel implements ActionListener
 		
 	}
 	
+	
+	public void createDateChooser()
+	{
+		pan = new JPanel();
+		String[] monthList = {"January","February", "March", "April","May","June","July","August","September", "October","November","December"}; 
+		Integer[] dayList = new Integer[31];
+		for(int i = 0; i <=30; i++)
+		{
+			dayList[i] = i+1;
+		}
+		pan.setLayout(new BorderLayout());
+		JButton button = new JButton("Submit date");
+		button.addActionListener(this);
+		button.setActionCommand("date");
+		months = new JList<String>(monthList);
+		days = new JList<Integer>(dayList);
+		JScrollPane monthScroll = new JScrollPane(months);
+		JScrollPane dayScroll = new JScrollPane(days);
+		pan.add(monthScroll, BorderLayout.WEST);
+		pan.add(dayScroll, BorderLayout.EAST);
+		pan.add(button, BorderLayout.SOUTH);
+		add(pan,BorderLayout.EAST);
+		pan.setVisible(true);
+		
+
+	}
+	
 	public void createJTable()
 	{
 		if(columnNames.isEmpty())
@@ -82,8 +115,10 @@ public class PanelFrame extends JPanel implements ActionListener
 			columnNames.add("ASURITE");
 		}
 		//adding dates 
+		System.out.println(repos.getDateList().size());
 		for(String date : repos.getDateList())
 		{
+			System.out.println("Added " + date);
 			columnNames.add(date);
 		}
 		
@@ -118,8 +153,9 @@ public class PanelFrame extends JPanel implements ActionListener
 			data.add(temp);
 		}
 		//converting from arraylist to array
-		Object[][] tableData = new Object[data.size()][data.get(0).size()];
+		Object[][] tableData = new Object[data.size()][columnNames.size()];
 		String[] tableNames = new String[columnNames.size()];
+	
 		
 		for(int i = 0; i < data.size(); i++)
 		{
@@ -134,20 +170,17 @@ public class PanelFrame extends JPanel implements ActionListener
 			tableNames[i] = columnNames.get(i);
 		}
 		
-		
+		data = new ArrayList<ArrayList<Object>>();
 		DefaultTableModel model = new DefaultTableModel(tableData, tableNames);
 		JTable table = new JTable(model);
 		
-		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		scrollPane.setVisible(true);
 		
-		this.add(scrollPane, BorderLayout.PAGE_START);
+		this.add(scrollPane, BorderLayout.WEST);
 		
-		revalidate();
-		repaint();
-		frame.revalidate();
-		frame.repaint();
+		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -178,15 +211,30 @@ public class PanelFrame extends JPanel implements ActionListener
 				
 				createJTable();
 				revalidate();
-				repaint();
-				frame.pack();
+			
 				break;
-			/*case "addAttendence":
+			case "addAttendence":
+				
+				createDateChooser();
+				this.remove(scrollPane);
+				revalidate();
 				
 				
+				
+				
+				break;
+			case "save":
+				break;
+				
+			case "date":
+				pan.setVisible(false);
+				
+				String outDate = months.getSelectedValue() +" " +days.getSelectedValue();
+				System.out.println("outDate is " + outDate);
 				try 
 				{
-					repos.openAttendence(date, frame);
+					JOptionPane.showMessageDialog(frame, repos.openAttendence(outDate, frame));
+					
 				} 
 				catch (IOException e1) 
 				{
@@ -200,11 +248,9 @@ public class PanelFrame extends JPanel implements ActionListener
 				{
 					JOptionPane.showMessageDialog(frame, e1.getMessage());
 				}
-				
-				
-				break;*/
-			case "save":
-				break;
+				createJTable();
+				revalidate();
+			break;
 			case "plotData":
 				break;
 			default:

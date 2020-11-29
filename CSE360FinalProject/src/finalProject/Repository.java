@@ -3,8 +3,10 @@ package finalProject;
 import java.awt.Component;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Stack;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -22,6 +24,11 @@ public class Repository
 		dateList = new Stack<String>();
 	}
 	
+	public void clearStudents()
+	{
+		studentList = new Stack<Student>();
+	}
+	
 	public Stack<Student> getStudents()
 	{
 		return studentList;
@@ -32,9 +39,12 @@ public class Repository
 		return dateList;
 	}
 	
-	public void openAttendence(String date, Component parent) throws FileNotFoundException, IOException
+	public String openAttendence(String date, Component parent) throws FileNotFoundException, IOException
 	{
-		dateList.add(date);
+		int count = 0;
+		Stack<String[]> strangers = new Stack<String[]>();
+		dateList.push(date);
+		System.out.println("Pushing " + date);
 		File newFile = loadFile(parent);
 		if(newFile == null)
 		{
@@ -65,7 +75,17 @@ public class Repository
 						}
 						else
 						{
+							System.out.println("Added "+ date + "To the student " + studentList.get(i).getASU());
 							studentList.get(i).addDate(date, Integer.valueOf(lines[1]));
+							count++;
+						}
+						
+					}
+					else
+					{
+						if(!strangers.contains(lines))
+						{
+							strangers.push(lines);
 						}
 						
 					}
@@ -74,6 +94,13 @@ public class Repository
 			
 		}
 		br.close();
+		String outString = "Data downloaded for " + count + " users in the Roster.\n"
+							+strangers.size()+ " additional attendee was found:\n";
+		for (String[] a : strangers)
+		{
+			outString += ""+ a[0] + ", connected for " + a[1] + " minutes\n"; 
+		}
+		return outString;
 	}
 	
 	
@@ -125,8 +152,8 @@ public class Repository
 		br.close();
 			
 		
-		
 	}
+	
 	
 	//public Stack getPoints(){} TODO
 
