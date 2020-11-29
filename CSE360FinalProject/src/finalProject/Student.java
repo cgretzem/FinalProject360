@@ -50,6 +50,12 @@ public class Student
 		return level;
 	}
 	
+	public void changeTime(String date, int time)
+	{
+		Integer newTime = (Integer)time;
+		dateMap.replace(date, dateMap.get(date)+newTime);
+	}
+	
 
 	public HashMap<String, Integer> getDates()
 	{

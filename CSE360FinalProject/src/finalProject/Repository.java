@@ -49,7 +49,15 @@ public class Repository
 				{
 					if(studentList.get(i).getASU().equals(lines[0]))
 					{
-						studentList.get(i).addDate(date, Integer.valueOf(lines[1]));
+						if(studentList.get(i).getDates().containsKey(date))
+						{
+							studentList.get(i).changeTime(date, Integer.valueOf(lines[1]));
+						}
+						else
+						{
+							studentList.get(i).addDate(date, Integer.valueOf(lines[1]));
+						}
+						
 					}
 				}
 			}
