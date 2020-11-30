@@ -5,7 +5,9 @@ import java.awt.BorderLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,6 +33,7 @@ public class PanelFrame extends JPanel implements ActionListener
 	private ArrayList<ArrayList<Object>> data;
 	private JList<String> months; 
 	private JList<Integer >days;
+	private JTable tableSave;
 	public PanelFrame(JFrame frame)
 	{
 
@@ -75,7 +78,30 @@ public class PanelFrame extends JPanel implements ActionListener
 		
 	}
 	
-	
+	public void save()
+	{
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter("savedTable.csv"));
+			for(int i = 0; i < tableSave.getColumnCount(); i++)
+			{
+				bw.write(String.valueOf(tableSave.getColumnName(i)) + ",");
+			}
+			bw.append("\n");
+			for(int j = 0; j < tableSave.getRowCount(); j++)
+			{
+				for(int i = 0; i < tableSave.getColumnCount(); i++)
+				{
+					bw.write(String.valueOf(tableSave.getValueAt(j, i)) + ",");
+				}
+				bw.append("\n");
+			}
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	public void createDateChooser()
 	{
 		pan = new JPanel();
@@ -173,7 +199,7 @@ public class PanelFrame extends JPanel implements ActionListener
 		data = new ArrayList<ArrayList<Object>>();
 		DefaultTableModel model = new DefaultTableModel(tableData, tableNames);
 		JTable table = new JTable(model);
-		
+		this.tableSave = table;
 		scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		scrollPane.setVisible(true);
@@ -188,7 +214,7 @@ public class PanelFrame extends JPanel implements ActionListener
 		switch (action) 
 		{
 			case "About":
-				JOptionPane.showMessageDialog(frame, "Team comprised of Cooper Gretzema");
+				JOptionPane.showMessageDialog(frame, "Team comprised of Cooper Gretzema, James Sun");
 				break;
 			case "loadRoster":
 				try 
@@ -224,6 +250,7 @@ public class PanelFrame extends JPanel implements ActionListener
 				
 				break;
 			case "save":
+				save();
 				break;
 				
 			case "date":
