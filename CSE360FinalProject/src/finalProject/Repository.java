@@ -99,6 +99,7 @@ public class Repository
 	{
 		int count = 0;
 		Stack<String[]> strangers = new Stack<String[]>();
+		Stack<String[]> not_strangers = new Stack<String[]>();
 		dateList.push(date);
 		System.out.println("Pushing " + date);
 		File newFile = loadFile(parent);
@@ -125,6 +126,7 @@ public class Repository
 				{
 					if(studentList.get(i).getASU().equals(lines[0]))
 					{
+						not_strangers.push(lines);
 						if(studentList.get(i).getDates().containsKey(date))
 						{
 							studentList.get(i).changeTime(date, Integer.valueOf(lines[1]));
@@ -137,17 +139,25 @@ public class Repository
 						}
 						
 					}
+					
 					else
 					{
-						if(!strangers.contains(lines))
-						{
-							strangers.push(lines);
-						}
+							if(!strangers.contains(lines))
+							{
+								strangers.push(lines);
+							}
 						
 					}
 				}
 			}
 			
+		}
+		for (String[] s : not_strangers)
+		{
+			if(strangers.contains(s))
+			{
+				strangers.remove(s);
+			}
 		}
 		br.close();
 		String outString = "Data downloaded for " + count + " users in the Roster.\n"
