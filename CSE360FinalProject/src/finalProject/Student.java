@@ -9,7 +9,7 @@ public class Student
 	private HashMap<String, Integer> dateMap;
 	
 	/*
-	 * Method to create a student object
+	 * Method to create a Student object
 	 * @param id:int
 	 * @param firstName:String
 	 * @param lastName:String
