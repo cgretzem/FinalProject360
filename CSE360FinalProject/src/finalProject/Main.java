@@ -10,6 +10,11 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class Main extends JFrame
 {
+	/*
+	 * Main program that is run
+	 * @param String[] args
+	 * @return void
+	 */
 	public static void main(String[] args)
 	{
 		JFrame frame = new JFrame("CSE360 Final Project");

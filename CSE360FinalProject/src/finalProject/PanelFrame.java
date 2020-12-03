@@ -1,12 +1,10 @@
 package finalProject;
 
 import java.awt.BorderLayout;
-
-
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
+import org.jfree.chart.*;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeriesCollection;
+@SuppressWarnings("serial")
 public class PanelFrame extends JPanel implements ActionListener
 {
 	private JFrame frame;
@@ -34,6 +36,12 @@ public class PanelFrame extends JPanel implements ActionListener
 	private JList<String> months; 
 	private JList<Integer >days;
 	private JTable tableSave;
+	
+	/*
+	 * Constructor for PanelFrame class
+	 * @param JFrame frame
+	 * @return PanelFrame object
+	 */
 	public PanelFrame(JFrame frame)
 	{
 
@@ -78,6 +86,29 @@ public class PanelFrame extends JPanel implements ActionListener
 		
 	}
 	
+	/*
+	 * Method to create graph based on data in roster and attendance file
+	 * @return void
+	 */
+	public void createGraph()
+	{
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		for(String d : repos.getDateList())
+		{
+			dataset.addSeries(repos.getData(d));
+		}
+		
+		JFreeChart chart = ChartFactory.createScatterPlot("Attendence", "Num of Students", "Percentage attendence", dataset, PlotOrientation.HORIZONTAL, true, false, false);
+		XYPlot plot = (XYPlot)chart.getPlot();
+	    plot.setBackgroundPaint(new Color(255,228,196));
+	    ChartPanel panel = new ChartPanel(chart);
+	    add(panel, BorderLayout.CENTER);
+	}
+	
+	/*
+	 * Method to save data currently in the table
+	 * @return void
+	 */
 	public void save()
 	{
 		try {
@@ -102,6 +133,10 @@ public class PanelFrame extends JPanel implements ActionListener
 		}
 		
 	}
+	/*
+	 * Method to create a date chooser and have user choose date
+	 * @return void
+	 */
 	public void createDateChooser()
 	{
 		pan = new JPanel();
@@ -128,6 +163,10 @@ public class PanelFrame extends JPanel implements ActionListener
 
 	}
 	
+	/*
+	 * Method to create a Jtable and display it
+	 * @return void
+	 */
 	public void createJTable()
 	{
 		if(columnNames.isEmpty())
@@ -208,6 +247,12 @@ public class PanelFrame extends JPanel implements ActionListener
 		
 		
 	}
+	/*
+	 * Overriding parent actionPerformed method in order to control what happens when listener is activated
+	 * @param e:ActionEvent
+	 * @return void
+	 * @Override actionPerformed
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
@@ -278,8 +323,14 @@ public class PanelFrame extends JPanel implements ActionListener
 				createJTable();
 				revalidate();
 			break;
+			
 			case "plotData":
+				createGraph();
+				this.remove(scrollPane);
+				revalidate();
 				break;
+				
+				
 			default:
 				break;
 		}

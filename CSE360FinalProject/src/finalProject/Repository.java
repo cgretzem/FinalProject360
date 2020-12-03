@@ -3,11 +3,14 @@ package finalProject;
 import java.awt.Component;
 
 import java.io.File;
-import java.util.HashMap;
+
 import java.util.Stack;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.jfree.data.xy.XYSeries;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,27 +21,80 @@ public class Repository
 	private Stack<Student> studentList;
 	private Stack<String> dateList;
 	
+	
+	/*
+	 * Constructor for repository class
+	 * @return Repository object
+	*/
 	public Repository()
 	{
 		studentList = new Stack<Student>();
 		dateList = new Stack<String>();
 	}
 	
+	/*
+	 * gets the XY data for plotting the graph
+	 * @return XYSeries containing data for graph
+	 * @param date:String date to search for
+	*/
+	public XYSeries getData(String date)
+	{
+		int[] count = {0,0,0,0,0,0,0,0,0,0,0};
+		XYSeries series1 = new XYSeries(date);
+		for (Student s : studentList)
+		{
+			
+			double percentage = (10*((double)(s.getDates().get(date)))/75.0);
+			if(percentage > 10)
+			{
+				percentage = 10;
+			}
+			int finalPercentage = ((int)percentage);
+			count[finalPercentage] = count[finalPercentage] +1;
+		}
+		int[] xAxis = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+		for(int i = 0; i< xAxis.length; i++)
+		{
+			series1.add(count[i],xAxis[i]);
+		}
+		return series1;
+	}
+	
+	/*
+	 * clears the student stack
+	 * @return void
+	*/
 	public void clearStudents()
 	{
 		studentList = new Stack<Student>();
 	}
 	
+	/*
+	 * gets the stack of students stored in repository
+	 * @return Stack<Student> list of students
+	*/
 	public Stack<Student> getStudents()
 	{
 		return studentList;
 	}
 	
+	/*
+	 * gets the stack of dates stored in the repository
+	 * @return Stack<String> list of dates
+	*/
 	public Stack<String> getDateList()
 	{
 		return dateList;
 	}
 	
+	/*
+	 * Opens an attendance file and reads data
+	 * @param date:String
+	 * @param parent:Component
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @return String confirmation and error messages
+	*/
 	public String openAttendence(String date, Component parent) throws FileNotFoundException, IOException
 	{
 		int count = 0;
@@ -103,7 +159,11 @@ public class Repository
 		return outString;
 	}
 	
-	
+	/*
+	 * Opens a roster file and reads data
+	 * @param parent:Component
+	 * @return File that was loaded
+	*/
 	public File loadFile(Component parent)
 	{
 		//selector sets newFile = user chosen CSV file, otherwise newFile = null;
@@ -119,7 +179,14 @@ public class Repository
 			
 			return newFile;
 	}
-	
+	/*
+	 * Opens a roster file and reads data
+	 * @param parent:Component
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws RuntimeException
+	 * @return String confirmation and error messages
+	*/
 	public void openRoster(Component parent) throws IOException, FileNotFoundException, RuntimeException
 	{
 		File newFile = loadFile(parent);
@@ -154,7 +221,5 @@ public class Repository
 		
 	}
 	
-	
-	//public Stack getPoints(){} TODO
 
 }
